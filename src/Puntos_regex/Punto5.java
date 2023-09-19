@@ -15,7 +15,7 @@ public class Punto5 {
     private static ArrayList<Tarjeta> ArrayM = new ArrayList<>();
     private static ArrayList<Tarjeta> ArrayV = new ArrayList<>();
     
-    public void Inicio5(){
+    public static void Inicio5(){
         
         int Cant = Integer.parseInt( JOptionPane.showInputDialog(null, "Cuantas tarjetas desea registrar: "));
 

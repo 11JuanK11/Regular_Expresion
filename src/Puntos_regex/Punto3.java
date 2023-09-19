@@ -11,7 +11,7 @@ public class Punto3 {
     
     static Scanner leer = new Scanner(System.in);
     
-    public void Inicio3(){
+    public static void Inicio3(){
         ArrayList<ArrayList<String>> ArrayPrincipal = new ArrayList<>();
         
         for (int i = 0; i < 2; i++) {
