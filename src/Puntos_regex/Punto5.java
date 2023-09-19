@@ -5,18 +5,21 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 import regular_expresion.Tarjeta;
 
 
 public class Punto5 {
     
-    static Scanner leer = new Scanner(System.in);
+    private static ArrayList<Tarjeta> Array = new ArrayList<>();
+    private static ArrayList<Tarjeta> ArrayM = new ArrayList<>();
+    private static ArrayList<Tarjeta> ArrayV = new ArrayList<>();
     
     public void Inicio5(){
         
-        ArrayList<Tarjeta> Array = new ArrayList<>();
-        
-        for (int i = 0; i < 2; i++) {
+        int Cant = Integer.parseInt( JOptionPane.showInputDialog(null, "Cuantas tarjetas desea registrar: "));
+
+        for (int i = 0; i < Cant; i++) {
             Tarjeta Tarjeta = new Tarjeta();
             String S = "";
             
@@ -35,9 +38,10 @@ public class Punto5 {
             S = ValidarApellido();
             Tarjeta.setApellido(S);
             
-            S = ValidarCodigo();
-            Tarjeta.setCodigo(S);
+            Array.add(Tarjeta);
+            JOptionPane.showMessageDialog(null, "Registro Exitoso.");
         }
+        SepararArrays(Array);
     }
     
     static String ValidarTipo(){
@@ -46,15 +50,14 @@ public class Punto5 {
         boolean Cumple = false;
         
         while (!Cumple){
-            System.out.println("Ingrese el tipo de la tarjeta(MasterCard/Visa): ");
-            String Tipo = leer.next();
+            String Tipo = JOptionPane.showInputDialog(null, "Ingrese el tipo de la tarjeta(MasterCard/Visa): ");
             Matcher Comparar = Validar.matcher(Tipo);
             
             if (Comparar.matches()){
                 S = Tipo;
                 Cumple = true;
             }else{
-                System.out.println("El tipo no coincide.");
+                JOptionPane.showMessageDialog(null, "El tipo no coincide.");
             }
         }
         return S;
@@ -66,15 +69,14 @@ public class Punto5 {
         boolean Cumple = false;
         
         while (!Cumple){
-            System.out.println("Ingrese el numero de la tarjeta(16) : ");
-            String Numero = leer.next();
+            String Numero = JOptionPane.showInputDialog(null, "Ingrese el numero de la tarjeta(16) : ");
             Matcher Comparar = Validar.matcher(Numero);
             
             if (Comparar.matches()){
                 S = Numero;
                 Cumple = true;
             }else{
-                System.out.println("El numero de la tarjeta debe ser de 16 numeros.");
+                JOptionPane.showMessageDialog(null, "El numero de la tarjeta debe ser de 16 numeros.");
             }
         }
         return S;
@@ -86,15 +88,14 @@ public class Punto5 {
         boolean Cumple = false;
         
         while (!Cumple){
-            System.out.println("Ingrese la fecha de la tarjeta(MM/AA): ");
-            String Fecha = leer.next();
+            String Fecha = JOptionPane.showInputDialog(null, "Ingrese la fecha de la tarjeta(MM/AA): ");
             Matcher Comparar = Validar.matcher(Fecha);
             
             if (Comparar.matches()){
                 S = Fecha;
                 Cumple = true;
             }else{
-                System.out.println("La fecha no cumple la condición.");
+                JOptionPane.showMessageDialog(null, "La fecha no cumple la condición.");
             }
         }
         return S;
@@ -106,15 +107,14 @@ public class Punto5 {
         boolean Cumple = false;
         
         while (!Cumple){
-            System.out.println("Ingrese el nombre del dueño la tarjeta(MAYUSCULAS): ");
-            String Nombre = leer.next();
+            String Nombre = JOptionPane.showInputDialog(null, "Ingrese el nombre del dueño la tarjeta(MAYUSCULAS): ");
             Matcher Comparar = Validar.matcher(Nombre);
             
             if (Comparar.matches()){
                 S = Nombre;
                 Cumple = true;
             }else{
-                System.out.println("El nombre no cumple la condición.");
+                JOptionPane.showMessageDialog(null, "El nombre no cumple la condición.");
             }
         }
         return S;
@@ -126,15 +126,14 @@ public class Punto5 {
         boolean Cumple = false;
         
         while (!Cumple){
-            System.out.println("Ingrese el apellido del dueño la tarjeta(MAYUSCULAS): ");
-            String Apellido = leer.next();
+            String Apellido = JOptionPane.showInputDialog(null, "Ingrese el apellido del dueño la tarjeta(MAYUSCULAS): ");
             Matcher Comparar = Validar.matcher(Apellido);
             
             if (Comparar.matches()){
                 S = Apellido;
                 Cumple = true;
             }else{
-                System.out.println("El apellido no cumple la condición.");
+                JOptionPane.showMessageDialog(null, "El apellido no cumple la condición.");
             }
         }
         return S;
@@ -146,18 +145,78 @@ public class Punto5 {
         boolean Cumple = false;
         
         while (!Cumple){
-            System.out.println("Ingrese el código de la tarjeta(3): ");
-            String Codigo = leer.next();
+            String Codigo = JOptionPane.showInputDialog(null, "Ingrese el código de la tarjeta(3): ");
             Matcher Comparar = Validar.matcher(Codigo);
             
             if (Comparar.matches()){
                 S = Codigo;
                 Cumple = true;
             }else{
-                System.out.println("El código no cumple la condición.");
+                JOptionPane.showMessageDialog(null, "El código no cumple la condición.");
             }
         }
         return S;
     }
     
+    static void SepararArrays(ArrayList<Tarjeta> Array){
+        Pattern ValidarM = Pattern.compile("MasterCard");
+        Pattern ValidarV = Pattern.compile("Visa");
+        
+        for (int i = 0; i < Array.size(); i++) {
+            Tarjeta Tarjeta = Array.get(i);
+            String Tipo = Tarjeta.getTipo();
+            
+            Matcher CompararM = ValidarM.matcher(Tipo);
+            Matcher CompararV = ValidarV.matcher(Tipo);
+            
+            if (CompararM.matches()){
+                ArrayM.add(Tarjeta);
+            }else{
+                if (CompararV.matches()){
+                    ArrayV.add(Tarjeta);
+                }
+            }
+        }
+        Array.clear();
+        Buscar(ArrayM, ArrayV);
+    }
+    
+    static void Buscar(ArrayList<Tarjeta> Master, ArrayList<Tarjeta> Visa){
+        String S = "";
+        
+        String A = JOptionPane.showInputDialog(null, "Ingrese el año que desea buscar: ");
+        String regex = "\\d{2}/" + A;
+        Pattern Validar = Pattern.compile(regex);
+        
+        S += BuscarMasterCard(Master, Validar);
+        S += BuscarVisa(Visa, Validar);
+        
+        JOptionPane.showMessageDialog(null, S);
+    }
+    
+    static String BuscarMasterCard(ArrayList<Tarjeta> Master, Pattern Validar){
+        String S = "";
+        
+        for (int i = 0; i < Master.size(); i++) {
+            Matcher Comparar = Validar.matcher(Master.get(i).getFecha());
+            
+            if (Comparar.matches()){
+                S += Master.get(i).getNombre() + " Fecha: "+ Master.get(i).getFecha() + "\n";
+            }
+        }
+        return S;
+    }
+    
+    static String BuscarVisa(ArrayList<Tarjeta> Visa, Pattern Validar){
+        String S = "";
+
+        for (int i = 0; i < Visa.size(); i++) {
+            Matcher Comparar = Validar.matcher(Visa.get(i).getFecha());
+            
+            if (Comparar.matches()){
+                S += Visa.get(i).getNombre() + " Fecha: "+ Visa.get(i).getFecha() + "\n";
+            }
+        }
+        return S;
+    }
 }
