@@ -12,7 +12,7 @@ public class Punto5 {
     
     static Scanner leer = new Scanner(System.in);
     
-    public void Inicio5(){
+    public static void Inicio5(){
         
         ArrayList<Tarjeta> Array = new ArrayList<>();
         
