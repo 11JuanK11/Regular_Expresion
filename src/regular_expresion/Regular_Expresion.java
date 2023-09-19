@@ -14,7 +14,6 @@ public class Regular_Expresion {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Punto2.Vista2();
     }
     
 }
