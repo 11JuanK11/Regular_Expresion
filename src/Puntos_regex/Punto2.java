@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package Puntos_regex;
 
 import java.util.ArrayList;
@@ -18,13 +15,20 @@ public class Punto2 {
         int cant = Integer.parseInt(JOptionPane.showInputDialog("Ingresa la cantidad de nodos que tendra el ArrayList principal."));
         ArrayList<ArrayList<String>> general = Creacion(cant);
         for (int i = 0; i < general.size(); i++) {
-            String num_lim = JOptionPane.showInputDialog("Ingresa el limite de los numeros ha ingresar.");
-            Pattern patrones = Patrones(num_lim);
+            boolean ban = true;
+            Pattern patrones = null;
+            do {                
+                String num_lim = JOptionPane.showInputDialog("Ingresa el limite de los numeros ha ingresar.");
+                if (Character.isDigit(num_lim.charAt(0))) {
+                    patrones = Patrones(num_lim);
+                    ban = false;
+                }else{
+                    JOptionPane.showMessageDialog(null, "Ingresaste algo erroneo.");
+                }    
+            } while (ban);
             int k = 0;
             do { 
                 String s = JOptionPane.showInputDialog("Ingresa un numero que sean menores al ingresado anteriormente ");
-                if(s.length() < num_lim.length())
-                    s = 0 + s;
                 Matcher m = patrones.matcher(s);
                 if (m.matches()) {
                     general.get(i).set(k, s);
@@ -34,46 +38,50 @@ public class Punto2 {
                 }
             } while (k < general.get(i).size());  
         }
-        
         JOptionPane.showMessageDialog(null, Mayor(general));
-        
     }
     
     private static Pattern Patrones(String num_lim){
-        String a = "", b = "" ,c ,d;
+        String a = "", b = "" ;
         for (int i = 0; i < num_lim.length()-1; i++) {
             a += "0";
         }
         Pattern p = Pattern.compile(a), patron;
         Matcher m = p.matcher(num_lim.substring(1));
         if(m.matches()){
-            b = "[0-" + (Integer.parseInt(num_lim.substring(0, 0))-1) + "]?";
+            b = "[0-" + (Integer.parseInt(num_lim.substring(0, 1))-1) + "]?";
             for (int i = 1; i < num_lim.length(); i++) {
                 b += "\\d";
+                if (i != num_lim.length()-1)
+                    b+="?";
             }
             patron = Pattern.compile(b); 
         }else{
             for (int i = 0; i < num_lim.length() ; i++) {
-                boolean bandera = true;
+                boolean bandera = true, ban2 = true;
                 for (int j = 0; j < num_lim.length() ; j++) {
                     if(j != (num_lim.length()-i)-1 && bandera){
-                        b += "[0-" + num_lim.substring(j, j+1) +"]";
-                        if(j == 0)
-                            b+="?";
+                        b += "[0-" + num_lim.substring(j, j+1) +"]";   
                     }else{
                         if (bandera) {
-                            b += "[0-" + (Integer.parseInt(num_lim.substring(j, j+1))-1) +"]";
+                            if (!num_lim.substring(j, j+1).equals("0")) {
+                                b += "[0-" + (Integer.parseInt(num_lim.substring(j, j+1))-1) +"]";
+                            }else{
+                                ban2 = false;
+                            }
+                            
                             bandera = false;
                         } 
                     }
+                    if (j < num_lim.length()-1 && ban2) 
+                        b+="?";
                     if(!bandera && j < num_lim.length()-1){
-                        b += "\\d";
+                        b += "\\d";  
                     }
                 }
                 if (i != num_lim.length()-1 ) {
                     b += "|";
                 }
-                
             }
             patron = Pattern.compile(b); 
         }
@@ -88,28 +96,35 @@ public class Punto2 {
                 interno.add("");
             }
             general.add(interno);
-            
         }
         return general; 
     }
     
     private static String Mayor(ArrayList<ArrayList<String>> general){
+        int d_may = 0;
+        String may = ""; 
+        Pattern p ;
         for (int i = 0; i < general.size(); i++) {
-            ArrayList<String> interno = general.get(i);
-            int cifras = interno.get(0).length();
-            String S = "";
-            for (int j = 0; j < cifras; j++) {
-                S += "[^0]";
-            }
-            Pattern p = Pattern.compile(S);
-            for (String string : interno) {
-                Matcher m = p.matcher(string);
-                if(m.matches()){
+            ArrayList<String> inter = general.get(i);
+            for (String S : inter) {
+                if(S.length() > d_may){
+                    d_may = S.length();
+                    may = S;
+                }else if( S.length() == d_may){
+                    boolean coinc = true;
+                    String aux;
+                    for (int j = 0; j+1 <= d_may && coinc ; j++) {
+                        aux = "[0-" + may.substring(j, j+1) + "]";
+                        p = Pattern.compile(aux);
+                        Matcher mm = p.matcher(S.substring(j, j+1));
+                        if (!mm.matches()) {
+                            coinc = false;
+                            may = S;
+                        }
+                    }
                 }
             }
-            
-        }
-        
-        return "";
+        }  
+        return may;
     }
 }
